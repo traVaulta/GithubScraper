@@ -1,0 +1,14 @@
+.search-bar {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 5px;
+  color: var(--app-color-primary);
+
+  &--input, &--input:focus, &--input:active {
+    width: 85%;
+    border: none;
+    outline: none;
+    color: var(--app-color-primary);
+    border-bottom: 1px solid var(--app-color-primary);
+  }
+}
