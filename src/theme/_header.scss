@@ -1,0 +1,17 @@
+.app-header {
+  color: var(--app-color-primary-contrast);
+  background-color: var(--app-color-primary);
+
+  &--outline {
+    padding: 25px 20px;
+    margin-bottom: 10px;
+
+    size: 2em;
+    font-weight: bold;
+  }
+
+  &--sponsor {
+    position: absolute;
+    right: 10px;
+  }
+}
