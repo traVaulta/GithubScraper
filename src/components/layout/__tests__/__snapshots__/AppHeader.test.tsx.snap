@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AppHeader should render 1`] = `
+<DocumentFragment>
+  <header
+    class="app-header app-header--outline"
+  >
+    <div
+      class="app-header app-header--sponsor"
+    >
+      <img
+        alt="Logo"
+        src="app-logo.png"
+      />
+      <img
+        alt="powered-by-rimac"
+        src="powered-by.png"
+      />
+    </div>
+    <div>
+      Github Scraper
+    </div>
+  </header>
+</DocumentFragment>
+`;

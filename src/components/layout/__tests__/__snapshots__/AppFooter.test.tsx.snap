@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AppFooter should render 1`] = `
+<DocumentFragment>
+  <footer
+    class="app-footer app-footer--outline"
+  >
+    <div>
+      ©GithubScraper, Croatia, 2020
+    </div>
+    <div
+      class="app-footer app-footer--contact"
+    >
+      <a
+        href="mailto:matijacvrk@gmail.com"
+      >
+        matijacvrk@gmail.com
+      </a>
+    </div>
+  </footer>
+</DocumentFragment>
+`;
