@@ -6,6 +6,7 @@ query GetRepositories($login: String!) {
         repositories(orderBy: {field:NAME, direction:ASC}, first:100) {
             nodes {
                 name
+                description
                 url
             }
             totalCount
