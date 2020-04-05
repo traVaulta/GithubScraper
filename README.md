@@ -10,7 +10,7 @@ Requires REACT_APP_GITHUB_TOKEN environment variable in order to run.
 
 You can add this environment variable:
 - when running the start script or in editor configuration (e.g. WebStorm run config),
-- by adding a .env file with your GitHub token like this: `REACT_APP_GITHUB_TOKEN=token_goes_here`
+- by adding an .env file with your GitHub token like this: `REACT_APP_GITHUB_TOKEN=token_goes_here`
 
 ## Available Scripts
 
