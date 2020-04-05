@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RepositorySummary should display default note when no description on click 1`] = `
+"Snapshot Diff:
+- First value
++ Second value
+
+@@ -8,6 +8,15 @@
+        >
+          AwesomeReactRepo
+        </a>
+      </span>
+    </div>
++   <div
++     class=\\"panel panel--info description-text\\"
++   >
++     <span
++       class=\\"\\"
++     >
++       No description available...
++     </span>
++   </div>
+  </DocumentFragment>"
+`;
+
+exports[`RepositorySummary should display description on click 1`] = `
+"Snapshot Diff:
+- First value
++ Second value
+
+@@ -8,6 +8,20 @@
+        >
+          AwesomeReactRepo
+        </a>
+      </span>
+    </div>
++   <div
++     class=\\"panel panel--info description-text\\"
++   >
++     <span
++       class=\\"\\"
++     >
++       Awesome React project 
++       <span
++         style=\\"width: 1em; height: 1em; margin: 0px .05em 0px .1em; vertical-align: -0.1em;\\"
++       >
++         😄
++       </span>
++     </span>
++   </div>
+  </DocumentFragment>"
+`;

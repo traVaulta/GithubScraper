@@ -6,7 +6,7 @@ import {RepositoriesListWithData} from '../index';
 import {client} from '../../../graphql';
 
 describe(`${RepositoriesListWithData.name}`, () => {
-    it('should pass', () => {
+    it('should render with initial note', () => {
         const {getByText} = render((
             <ApolloProvider client={client}>
                 <RepositoriesListWithData/>

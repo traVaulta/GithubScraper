@@ -1,5 +1,5 @@
 export interface RepositorySummaryDTO {
     name: string;
-    description: string;
+    description?: string;
     url: string;
 }
