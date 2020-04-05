@@ -50,6 +50,7 @@
     "typescript": "^3.7.5"
   },
   "devDependencies": {
+    "@apollo/react-testing": "^3.1.4",
     "snapshot-diff": "^0.7.0"
   }
 }
