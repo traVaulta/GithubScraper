@@ -14,4 +14,9 @@ describe(`${App.name}`, () => {
         expect(noteElement).toBeInTheDocument();
         expect(appElement).toHaveClass('container');
     });
+
+    test('regression', () => {
+        const {asFragment} = render(<App/>);
+        expect(asFragment()).toMatchSnapshot();
+    });
 });

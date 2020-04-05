@@ -1,6 +1,6 @@
 import React from 'react';
 
-const AppFooter = () => (
+export const AppFooter = () => (
     <footer className="app-footer app-footer--outline">
         <div>
             &copy;GithubScraper, Croatia, 2020
@@ -10,7 +10,3 @@ const AppFooter = () => (
         </div>
     </footer>
 );
-
-const Footer = React.memo(AppFooter);
-
-export default Footer;
