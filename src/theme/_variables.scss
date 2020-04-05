@@ -1,0 +1,56 @@
+:root {
+  /** primary **/
+  --app-color-primary: #000033;
+  --app-color-primary-contrast: #ffffff;
+  --app-color-primary-shade: #000000;
+  --app-color-primary-tint: #003366;
+
+  /** secondary **/
+  --app-color-secondary: #330033;
+  --app-color-secondary-contrast: #ffffff;
+  --app-color-secondary-shade: #000000;
+  --app-color-secondary-tint:  #663366;
+
+  /** tertiary **/
+  --app-color-tertiary: #003333;
+  --app-color-tertiary-contrast: #ffffff;
+  --app-color-tertiary-shade: #000000;
+  --app-color-tertiary-tint:  #006666;
+
+  /** success **/
+  --app-color-success: #009999;
+  --app-color-success-contrast: #ffffff;
+  --app-color-success-shade: #003300;
+  --app-color-success-tint: #00cccc;
+
+  /** warning **/
+  //--app-color-warning: #ffce00;
+  --app-color-warning: #ffff00;
+  --app-color-warning-contrast: #ffffff;
+  --app-color-warning-shade: #cccc00;
+  --app-color-warning-tint: #ffff99;
+
+  /** danger **/
+  --app-color-danger: #cc0000;
+  --app-color-danger-contrast: #ffffff;
+  --app-color-danger-shade: #990000;
+  --app-color-danger-tint: #ff0000;
+
+  /** dark **/
+  --app-color-dark: #222428;
+  --app-color-dark-contrast: #ffffff;
+  --app-color-dark-shade: #1e2023;
+  --app-color-dark-tint: #383a3e;
+
+  /** medium **/
+  --app-color-medium: #989aa2;
+  --app-color-medium-contrast: #ffffff;
+  --app-color-medium-shade: #86888f;
+  --app-color-medium-tint: #a2a4ab;
+
+  /** light **/
+  --app-color-light: #f4f5f8;
+  --app-color-light-contrast: #000000;
+  --app-color-light-shade: #d7d8da;
+  --app-color-light-tint: #f5f6f9;
+}

@@ -6,6 +6,40 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+a {
+  color: var(--app-color-primary);
+
+  &:active, &:hover {
+    color: var(--app-color-primary-tint);
+  }
+}
+
+.container {
+  margin: 0 auto;
+  padding: 5px 20px;
+}
+
+.panel {
+  margin: 10px auto;
+  padding: 10px 20px;
+
+  &--primary {
+    color: var(--app-color-primary-contrast);
+    background-color: var(--app-color-primary);
+  }
+
+  &--secondary {
+    color: var(--app-color-secondary-contrast);
+    background-color: var(--app-color-secondary);
+  }
+
+  &--tertiary {
+    color: var(--app-color-tertiary-contrast);
+    background-color: var(--app-color-tertiary);
+  }
+
+  &--info {
+    color: var(--app-color-light-contrast);
+    background-color: var(--app-color-light);
+  }
 }
