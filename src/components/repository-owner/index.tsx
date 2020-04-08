@@ -10,9 +10,9 @@ import {
     RepositoryEdge
 } from '../../graphql/types';
 import {RepositorySummaryDTO} from './models';
-import RepositoriesList from './components/repository-list';
-import {UserProfileSearch} from './components/user-profile-search';
-import UserProfileSummary from './components/user-profile-summary';
+import RepositoriesList from './components/repositories-list-section/repository-list';
+import {UserProfileSearch} from './components/user-profile-section/user-profile-search';
+import UserProfileSummary from './components/user-profile-section/user-profile-summary';
 
 export enum SearchStatus {
     INITIAL,

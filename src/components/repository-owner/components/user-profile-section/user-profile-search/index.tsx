@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {SearchBar} from '../../../shared/components/search-bar';
+import {SearchBar} from '../../../../shared/components/search-bar';
 
 export  interface Props {
     pattern?: string;
