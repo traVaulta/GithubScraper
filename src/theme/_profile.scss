@@ -1,0 +1,63 @@
+.user-profile-summary {
+  padding: 0 10px;
+  border-radius: 8px;
+
+  &--content {
+    width: calc(100% - 20px);
+    color: var(--app-color-light-contrast);
+    background-color: var(--app-color-light);
+  }
+
+  &--title {
+    size: 1.5em;
+    min-height: 2em;
+    width: calc(100% - 20px);
+
+    color: var(--app-color-primary-contrast);
+    background-color: var(--app-color-primary);
+
+    margin-bottom: 10px;
+
+    .title-text {
+      padding-top: 5px;
+      width: 90%;
+      display: inline-block;
+    }
+
+    .minimize-icon {
+      display: inline-block;
+      width: calc(10% - 10px);
+      text-align: right;
+      padding-right: 10px;
+    }
+  }
+
+  &--avatar {
+    display: inline-block;
+    max-width: 250px;
+    padding: 10px 20px;
+    text-align: center;
+    img {
+      border-radius: 96px;
+      overflow: hidden;
+    }
+  }
+
+  &--details {
+    display: inline-block;
+    vertical-align: top;
+    width: 75%;
+    padding: 20px;
+  }
+
+  &--name {}
+
+  &--email {}
+
+  &--url {}
+}
+
+.user-counters {
+  margin: 0;
+  width: calc(100% - 29px);
+}
