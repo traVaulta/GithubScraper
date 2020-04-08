@@ -24,7 +24,7 @@ export enum SearchStatus {
 
 export const DEFAULT_PAGE_SIZE = 5;
 
-export const RepositoriesListWithData = () => {
+export const RepositoryOwnerLookup = () => {
     const [searchStatus, changeSearchStatus] = useState(SearchStatus.INITIAL);
 
     const [searchPattern, changeSearchPattern] = useState('');

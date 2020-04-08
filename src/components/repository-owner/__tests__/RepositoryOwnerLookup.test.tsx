@@ -3,7 +3,7 @@ import {cleanup, render, waitForElement} from '@testing-library/react';
 import {ApolloProvider} from '@apollo/react-hooks';
 import {MockedProvider} from '@apollo/react-testing';
 
-import {RepositoriesListWithData} from '../index';
+import {RepositoryOwnerLookup} from '../index';
 import {client} from '../../../graphql';
 import {GET_REPOSITORIES} from '../../../graphql/github/getRepositories';
 
@@ -19,13 +19,13 @@ const mockedError = [{
     },
 }];
 
-describe(`${RepositoriesListWithData.name}`, () => {
+describe(`${RepositoryOwnerLookup.name}`, () => {
     afterEach(cleanup);
 
     it('should render with initial note', () => {
         const {getByText} = render((
             <ApolloProvider client={client}>
-                <RepositoriesListWithData/>
+                <RepositoryOwnerLookup/>
             </ApolloProvider>
         ));
         const element = getByText('Start browsing repositories - enter user profile in search first...');
@@ -35,7 +35,7 @@ describe(`${RepositoriesListWithData.name}`, () => {
     it('should render with note about error', async () => {
         const {getByText} = render((
             <MockedProvider mocks={mockedError} addTypename={false}>
-                <RepositoriesListWithData/>
+                <RepositoryOwnerLookup/>
             </MockedProvider>
         ));
         const element = await waitForElement(() =>
