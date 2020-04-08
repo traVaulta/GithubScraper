@@ -1,13 +1,13 @@
 import React from 'react';
 import {fireEvent, render} from '@testing-library/react';
 
-import {RepositorySearch} from '../repository-search';
+import {RepositoryFilter} from '../repository-filter';
 
-describe(`${RepositorySearch.name}`, () => {
+describe(`${RepositoryFilter.name}`, () => {
     it('should render without count', () => {
         const onPatternChange = () => {};
         const {container} = render(
-            <RepositorySearch resultsCount={0} onPatternChange={onPatternChange}/>
+            <RepositoryFilter resultsCount={0} onPatternChange={onPatternChange}/>
         );
         expect(container.querySelector('.fa-search')).toBeInTheDocument();
         expect(container.querySelector('.fa-github')).not.toBeInTheDocument();
@@ -16,7 +16,7 @@ describe(`${RepositorySearch.name}`, () => {
     it('should render with count', () => {
         const onPatternChange = () => {};
         const {container} = render(
-            <RepositorySearch resultsCount={12} onPatternChange={onPatternChange}/>
+            <RepositoryFilter resultsCount={12} onPatternChange={onPatternChange}/>
         );
         expect(container.querySelector('.fa-search')).toBeInTheDocument();
         expect(container.querySelector('.fa-github')).toBeInTheDocument();
@@ -30,7 +30,7 @@ describe(`${RepositorySearch.name}`, () => {
             externalState.searchPattern = value;
         };
         const {container} = render(
-            <RepositorySearch onPatternChange={onPatternChange}/>
+            <RepositoryFilter onPatternChange={onPatternChange}/>
         );
 
         const searchInput: HTMLInputElement = container.firstChild?.firstChild as HTMLInputElement;

@@ -4,11 +4,28 @@
   margin-bottom: 5px;
   color: var(--app-color-primary);
 
+  &--grouped-item {
+    display: inline-block;
+    //width: calc(90% - 20px);
+    width: calc(95% - 20px);
+  }
+
+  .icon {
+    //width: 10%;
+    width: 5%;
+    //text-align: center;
+  }
+
   &--input, &--input:focus, &--input:active {
-    width: 85%;
+    width: calc(100% - 20px);
     border: none;
     outline: none;
     color: var(--app-color-primary);
     border-bottom: 1px solid var(--app-color-primary);
+  }
+
+  &--optional-item {
+    padding: 0 10px;
+    width: 100%;
   }
 }
