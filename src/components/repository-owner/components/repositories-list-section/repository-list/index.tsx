@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 
 import {RepositoryFilter} from '../repository-filter';
 import {RepositorySummary} from '../repository-summary';
-import {RepositorySummaryDTO} from '../../models';
+import {RepositorySummaryDTO} from '../../../models';
 
 export interface Props {
     repositories: RepositorySummaryDTO[];

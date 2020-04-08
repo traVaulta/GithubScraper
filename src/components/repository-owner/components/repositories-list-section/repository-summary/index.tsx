@@ -1,8 +1,8 @@
 import React, {useState, MouseEvent} from 'react';
-import {RepositorySummaryDTO} from '../../models';
+import {RepositorySummaryDTO} from '../../../models';
 import Emoji from 'react-emoji-render';
 
-import {noBubbling} from '../../../shared/utils/event-handlers';
+import {noBubbling} from '../../../../shared/utils/event-handlers';
 
 export const RepositorySummary = (props: { repositorySummary: RepositorySummaryDTO }) => {
     const [expanded, toggle] = useState(false);

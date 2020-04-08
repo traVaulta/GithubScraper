@@ -1,7 +1,7 @@
 import React from 'react';
 import * as _ from 'lodash';
 
-import {SearchBar} from '../../../shared/components/search-bar';
+import {SearchBar} from '../../../../shared/components/search-bar';
 
 export interface Props {
     focus?: boolean;
