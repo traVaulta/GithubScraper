@@ -6,6 +6,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+#root {
+  overflow: auto;
+}
+
 a {
   color: var(--app-color-primary);
 
@@ -19,9 +23,16 @@ a {
   padding: 5px 20px;
 }
 
+.push-down {
+  margin-bottom: 80px;
+}
+
 .panel {
-  margin: 10px auto;
-  padding: 10px 20px;
+  &--content {
+    margin: 10px auto;
+    padding: 10px 20px;
+    border-radius: 8px;
+  }
 
   &--primary {
     color: var(--app-color-primary-contrast);
@@ -41,6 +52,17 @@ a {
   &--info {
     color: var(--app-color-light-contrast);
     background-color: var(--app-color-light);
+  }
+
+  &--title {
+    display: inline-block;
+    width: 90%;
+  }
+
+  &--actions {
+    display: inline-block;
+    width: 10%;
+    text-align: right;
   }
 }
 

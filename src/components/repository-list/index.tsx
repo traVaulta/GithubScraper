@@ -2,10 +2,17 @@ import React, {useEffect, useState} from 'react';
 import {useQuery} from '@apollo/react-hooks';
 import * as _ from 'lodash';
 
-import {GET_REPOSITORIES} from '../../graphql/github/getRepositories';
-import RepositoriesList from './components/repository-list';
-import {RepositorySearch} from './components/repository-search';
+import {GET_REPOSITORIES_INITIAL} from '../../graphql/github/getRepositoriesInitial';
+import {
+    GetRepositoriesInitialQuery,
+    GetRepositoriesInitialQueryVariables,
+    OrderDirection,
+    RepositoryEdge
+} from '../../graphql/types';
 import {RepositorySummaryDTO} from './models';
+import RepositoriesList from './components/repository-list';
+import {UserProfileSearch} from './components/user-profile-search';
+import UserProfileSummary from './components/user-profile-summary';
 
 export enum SearchStatus {
     INITIAL,
@@ -15,11 +22,21 @@ export enum SearchStatus {
     RESULTS_ERROR
 }
 
+export const DEFAULT_PAGE_SIZE = 5;
+
 export const RepositoriesListWithData = () => {
     const [searchStatus, changeSearchStatus] = useState(SearchStatus.INITIAL);
 
     const [searchPattern, changeSearchPattern] = useState('');
-    const {loading, error, data} = useQuery(GET_REPOSITORIES, {variables: {login: searchPattern}});
+    const [filterPattern, changeFilterPattern] = useState('');
+
+    const {loading, error, data} = useQuery<GetRepositoriesInitialQuery>(GET_REPOSITORIES_INITIAL, {
+        variables: {
+            login: searchPattern,
+            order: OrderDirection.Asc,
+            pageSize: DEFAULT_PAGE_SIZE
+        } as GetRepositoriesInitialQueryVariables
+    });
 
     const triggerSearch = (pattern: string) => {
         if (_.isEmpty(pattern)) {
@@ -27,15 +44,40 @@ export const RepositoriesListWithData = () => {
         } else {
             changeSearchStatus(SearchStatus.RESULTS_LOAD);
         }
-        changeSearchPattern(pattern);
     };
 
+    const triggerSearchByUser = (pattern: string) => _.map([triggerSearch, changeSearchPattern], fn => fn(pattern));
+    const triggerSearchByRepo = (pattern: string) => changeFilterPattern(pattern);
+
     let repositories: RepositorySummaryDTO[] = [];
-    if (_.get(data, 'repositoryOwner.repositories.nodes')) {
-        repositories = _.get(data, 'repositoryOwner.repositories.nodes', []);
+    if (_.get(data, 'repositoryOwner.repositories.edges')) {
+        let repositoryEdges = _.get(data, 'repositoryOwner.repositories.edges') as RepositoryEdge[];
+        repositories = _.map(repositoryEdges, (edge: RepositoryEdge): RepositorySummaryDTO => (
+            {
+                name: edge?.node?.name ?? '',
+                description: edge?.node?.description,
+                url: edge?.node?.url
+            } as RepositorySummaryDTO)
+        );
     }
+
     const hasResults = !_.isEmpty(repositories) && !error;
-    const resultsCount = hasResults ? _.size(repositories) : void 0;
+    const resultsCount = hasResults ? data?.repositoryOwner?.repositories.totalCount : void 0;
+
+    if (hasResults && !!filterPattern) {
+        const rp = new RegExp(filterPattern);
+        repositories = _.filter(repositories, repo => {
+            return rp.test(repo.name.toLowerCase()) || rp.test(repo.description?.toLowerCase() ?? '');
+        });
+    }
+
+    const [avatarUrl, username, email, url] = [
+        _.get(data, 'repositoryOwner.avatarUrl'),
+        _.get(data, 'repositoryOwner.login'),
+        _.get(data, 'repositoryOwner.email'),
+        _.get(data, 'repositoryOwner.url'),
+    ];
+    const hasUserProfile = !_.some([avatarUrl, username, email, url], _.isNil);
 
     useEffect(() => {
         const isLoading = _.isEqual(searchStatus, SearchStatus.RESULTS_LOAD);
@@ -48,14 +90,33 @@ export const RepositoriesListWithData = () => {
         }
     }, [loading, error, hasResults, searchStatus]);
 
-    const renderResultsFound = () => ((<RepositoriesList repositories={repositories}/>));
-    const renderWithNote = (note: string) => (
-        <div className="container">{note}</div>
+    const renderWithNote = (note: string) => (<div className="container">{note}</div>);
+    const renderResultsFound = () => (
+        <RepositoriesList
+            focus={hasResults && !_.isEmpty(filterPattern)}
+            filterPattern={filterPattern}
+            repositories={repositories}
+            resultsCount={resultsCount}
+            triggerSearch={triggerSearchByRepo}
+        />
     );
+
+    const [displayProfile, toggleDisplayProfile] = useState(true);
+    const onToggleProfile = () => toggleDisplayProfile(!displayProfile);
 
     return (
         <>
-            <RepositorySearch pattern={searchPattern} onPatternChange={triggerSearch} resultsCount={resultsCount}/>
+            <UserProfileSearch pattern={searchPattern} onPatternChange={triggerSearchByUser}/>
+            {hasUserProfile && (
+                <UserProfileSummary
+                    avatarUrl={avatarUrl}
+                    name={username}
+                    email={email}
+                    url={url}
+                    displayed={displayProfile}
+                    toggleDisplay={onToggleProfile}
+                />
+            )}
             {(status => {
                 switch (status) {
                     case SearchStatus.RESULTS_SUCCESS:
