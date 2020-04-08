@@ -23,6 +23,7 @@ export const SearchBar = (props: Props) => {
                 <input
                     type="text"
                     className="search-bar search-bar--input"
+                    aria-label="search-bar--input"
                     placeholder={placeholder}
                     ref={inputRef}
                     value={pattern}

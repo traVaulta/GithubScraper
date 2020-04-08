@@ -5,14 +5,14 @@ exports[`RepositorySummary should display default note when no description on cl
 - First value
 + Second value
 
-@@ -8,6 +8,15 @@
-        >
-          AwesomeReactRepo
-        </a>
-      </span>
+@@ -19,6 +19,15 @@
+            class=\\"fa fa-external-link\\"
+          />
+        </button>
+      </div>
     </div>
 +   <div
-+     class=\\"panel panel--info description-text\\"
++     class=\\"panel panel--info panel--content description-text\\"
 +   >
 +     <span
 +       class=\\"\\"
@@ -28,14 +28,14 @@ exports[`RepositorySummary should display description on click 1`] = `
 - First value
 + Second value
 
-@@ -8,6 +8,20 @@
-        >
-          AwesomeReactRepo
-        </a>
-      </span>
+@@ -19,6 +19,20 @@
+            class=\\"fa fa-external-link\\"
+          />
+        </button>
+      </div>
     </div>
 +   <div
-+     class=\\"panel panel--info description-text\\"
++     class=\\"panel panel--info panel--content description-text\\"
 +   >
 +     <span
 +       class=\\"\\"

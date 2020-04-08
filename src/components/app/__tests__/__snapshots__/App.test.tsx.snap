@@ -8,18 +8,27 @@ exports[`App regression 1`] = `
     <div
       class="search-bar"
     >
-      <input
-        class="search-bar search-bar--input"
-        placeholder="Enter github user here..."
-        type="text"
-        value=""
-      />
-      <span>
-         
-        <i
-          class="fa fa-search"
+      <div
+        class="search-bar search-bar--grouped-item"
+      >
+        <input
+          aria-label="search-bar--input"
+          class="search-bar search-bar--input"
+          placeholder="Enter GitHub username here..."
+          type="text"
+          value=""
         />
-      </span>
+      </div>
+      <div
+        class="search-bar search-bar--grouped-item icon"
+      >
+        <span>
+           
+          <i
+            class="fa fa-search"
+          />
+        </span>
+      </div>
     </div>
     <div
       class="container"

@@ -29,11 +29,11 @@ describe(`${RepositoryFilter.name}`, () => {
         const onPatternChange = (value: string) => {
             externalState.searchPattern = value;
         };
-        const {container} = render(
+        const {getByLabelText} = render(
             <RepositoryFilter onPatternChange={onPatternChange}/>
         );
 
-        const searchInput: HTMLInputElement = container.firstChild?.firstChild as HTMLInputElement;
+        const searchInput: HTMLInputElement = getByLabelText('search-bar--input') as HTMLInputElement;
         fireEvent.change(searchInput, {target: {value: 'tra'}});
 
         expect(searchInput.value).toBe('tra');
