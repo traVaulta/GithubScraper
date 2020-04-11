@@ -28,8 +28,8 @@ export const RepositoryFilter = (props: Props) => {
                 <div className="user-counters">
                     <div className="panel panel--primary panel--content">
                         {isFilteringResults ?
-                            <span> <i className="fa fa-github"/> {resultsCount} ({filteredResultsCount} shown)</span> :
-                            <span> <i className="fa fa-github"/> {resultsCount}</span>}
+                            <span> <i className="fa fa-github"/> {resultsCount} total ({filteredResultsCount} shown)</span> :
+                            <span> <i className="fa fa-github"/> {resultsCount} total</span>}
                     </div>
                 </div>
             )}
