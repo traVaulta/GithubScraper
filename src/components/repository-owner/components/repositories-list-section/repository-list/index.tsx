@@ -11,10 +11,11 @@ export interface Props {
     focus?: boolean;
     filterPattern?: string;
     triggerSearch: (pattern: string) => void;
+    note?: string;
 }
 
 const RepositoriesList = (props: Props) => {
-    const {filterPattern, focus, repositories, resultsCount, triggerSearch} = props;
+    const {filterPattern, focus, note, repositories, resultsCount, triggerSearch} = props;
     return (
         <div className="push-down">
             <RepositoryFilter
@@ -25,9 +26,11 @@ const RepositoriesList = (props: Props) => {
                 resultsCount={resultsCount}
             />
 
-            {_.map(repositories, (repository: RepositorySummaryDTO, id: number) =>
+            {!note && _.map(repositories, (repository: RepositorySummaryDTO, id: number) =>
                 <RepositorySummary key={id} repositorySummary={repository}/>
             )}
+
+            {!!note && <div className="container">{note}</div>}
         </div>
     );
 };
