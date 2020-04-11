@@ -31,11 +31,12 @@ export const RepositoryOwnerLookup = () => {
 
     const [searchPattern, changeSearchPattern] = useState('');
     const [filterPattern, changeFilterPattern] = useState('');
+    const [order, changeOrder] = useState(OrderDirection.Asc);
 
     const {loading, error, data} = useQuery<GetRepositoriesInitialQuery>(GET_REPOSITORIES_INITIAL, {
         variables: {
             login: searchPattern,
-            order: OrderDirection.Asc,
+            order,
             pageSize: DEFAULT_PAGE_SIZE
         } as GetRepositoriesInitialQueryVariables
     });
@@ -50,6 +51,10 @@ export const RepositoryOwnerLookup = () => {
 
     const triggerSearchByUser = (pattern: string) => _.map([triggerSearch, changeSearchPattern, () => changeFilterPattern('')], fn => fn(pattern));
     const triggerSearchByRepo = (pattern: string) => changeFilterPattern(pattern);
+    const isAscOrder = _.isEqual(order, OrderDirection.Asc);
+    const triggerOrderChange = (isAsc: boolean) => isAsc ?
+        changeOrder(OrderDirection.Asc) :
+        changeOrder(OrderDirection.Desc);
 
     let repositories: RepositorySummaryDTO[] = [];
     if (_.get(data, 'repositoryOwner.repositories.edges')) {
@@ -96,8 +101,10 @@ export const RepositoryOwnerLookup = () => {
         <RepositoriesList
             focus={isFiltering && !_.isEmpty(filterPattern)}
             filterPattern={filterPattern}
+            isAsc={isAscOrder}
             repositories={repositories}
             resultsCount={resultsCount}
+            sortChange={triggerOrderChange}
             triggerSearch={triggerSearchByRepo}
             note={note}
         />

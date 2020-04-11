@@ -6,14 +6,11 @@
 
   &--grouped-item {
     display: inline-block;
-    //width: calc(90% - 20px);
     width: calc(95% - 20px);
   }
 
   .icon {
-    //width: 10%;
     width: 5%;
-    //text-align: center;
   }
 
   &--input, &--input:focus, &--input:active {
@@ -28,4 +25,20 @@
     padding: 0 10px;
     width: 100%;
   }
+}
+
+.sort-button {
+  padding: 0 5px;
+  margin-top: 10px;
+  margin-left: 10px;
+
+  border: 1px solid;
+  background-color: var(--app-color-primary-tint);
+  border-radius: 4px;
+
+  cursor: pointer;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
 }

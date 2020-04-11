@@ -5,18 +5,18 @@ import {SearchBar} from '../../../../shared/components/search-bar';
 
 export interface Props {
     focus?: boolean;
+    isAsc?: boolean
     pattern?: string;
     resultsCount?: number;
     filteredResultsCount?: number;
     onPatternChange: (value: string) => void;
+    onSortChange: (isAsc: boolean) => void;
 }
 
 export const RepositoryFilter = (props: Props) => {
-    const {filteredResultsCount, focus, pattern, onPatternChange, resultsCount} = props;
-    const hasResults = !_.isNil(resultsCount) && _.gt(resultsCount, 0);
-    const isFilteringResults = !_.isNil(filteredResultsCount) &&
-        _.gt(filteredResultsCount, 0) &&
-        !_.eq(filteredResultsCount, resultsCount);
+    const {filteredResultsCount: count, focus, pattern, onPatternChange, onSortChange, resultsCount: total} = props;
+    const hasResults = !_.isNil(total) && _.gt(total, 0);
+    const isFilteringResults = !_.isNil(count) && _.gt(count, 0) && !_.eq(count, total);
     return (
         <SearchBar
             focus={focus}
@@ -28,8 +28,16 @@ export const RepositoryFilter = (props: Props) => {
                 <div className="user-counters">
                     <div className="panel panel--primary panel--content">
                         {isFilteringResults ?
-                            <span> <i className="fa fa-github"/> {resultsCount} total ({filteredResultsCount} shown)</span> :
-                            <span> <i className="fa fa-github"/> {resultsCount} total</span>}
+                            <span> <i className="fa fa-github"/> {total} total ({count} shown)</span> :
+                            <span> <i className="fa fa-github"/> {total} total</span>
+                        }
+                        <span>  <span className="sort-button" onClick={() => onSortChange(!props.isAsc)}>
+                            {
+                                !props.isAsc ?
+                                    <span><i className="fa fa-caret-down"/> DESC</span> :
+                                    <span><i className="fa fa-caret-up"/> ASC</span>
+                            }
+                        </span></span>
                     </div>
                 </div>
             )}

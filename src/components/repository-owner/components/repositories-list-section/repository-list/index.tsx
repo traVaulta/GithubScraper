@@ -10,20 +10,24 @@ export interface Props {
     resultsCount?: number;
     focus?: boolean;
     filterPattern?: string;
+    isAsc?: boolean
     triggerSearch: (pattern: string) => void;
+    sortChange: (isAsc: boolean) => void;
     note?: string;
 }
 
 const RepositoriesList = (props: Props) => {
-    const {filterPattern, focus, note, repositories, resultsCount, triggerSearch} = props;
+    const {filterPattern, focus, isAsc, note, repositories, resultsCount, sortChange, triggerSearch} = props;
     return (
         <div className="push-down">
             <RepositoryFilter
                 filteredResultsCount={_.size(repositories)}
                 focus={focus}
+                isAsc={isAsc}
                 pattern={filterPattern}
                 onPatternChange={triggerSearch}
                 resultsCount={resultsCount}
+                onSortChange={sortChange}
             />
 
             {!note && _.map(repositories, (repository: RepositorySummaryDTO, id: number) =>
