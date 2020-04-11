@@ -1,7 +1,7 @@
 import React from 'react';
 import {cleanup, fireEvent, render, waitForElement} from '@testing-library/react';
 import {ApolloProvider} from '@apollo/react-hooks';
-import {MockedProvider} from '@apollo/react-testing';
+import {MockedProvider, wait} from '@apollo/react-testing';
 import * as _ from 'lodash';
 
 import {
@@ -54,13 +54,6 @@ const repositories = [
     }
 ];
 
-/*
-// default loading and done successfully
-{loading: true, error: undefined, data: undefined, counter: 1}
-{loading: true, error: undefined, data: undefined, counter: 2}
-{loading: false, error: undefined, data: {repositoryOwner: null}, counter: 3}
-{loading: false, error: undefined, data: {repositoryOwner: null}, counter: 4}
-*/
 const mockLoadedDefaultRequest = {
     request: {
         query: GET_REPOSITORIES_INITIAL,
@@ -80,16 +73,6 @@ const mockLoadedDefaultRequest = {
     }
 };
 
-/*
-// query loading and done successfully
-{loading: true, error: undefined, data: undefined, counter: 1}
-{loading: true, error: undefined, data: undefined, counter: 2}
-{loading: true, error: undefined, data: undefined, counter: 3}
-{loading: false, error: undefined, data: {...mockedResponse}, counter: 4}
-{loading: false, error: undefined, data: {...mockedResponse}, counter: 5}
-{loading: false, error: undefined, data: {...mockedResponse}, counter: 6}
-{loading: false, error: undefined, data: {...mockedResponse}, counter: 7}
-*/
 const mockLoadedSuccessRequest = {
     request: {
         query: GET_REPOSITORIES_INITIAL,
@@ -134,6 +117,33 @@ const mockSuccess = () => [
     mockLoadedSuccessRequest
 ];
 
+const mockSuccessNotFound = () => [
+    mockLoadedDefaultRequest,
+    {...mockLoadedDefaultRequest, request: {
+            query: GET_REPOSITORIES_INITIAL,
+            variables: {
+                login: 'gibberish',
+                order: OrderDirection.Asc,
+                pageSize: DEFAULT_PAGE_SIZE
+            } as GetRepositoriesInitialQueryVariables,
+        }
+    }
+];
+
+const mockSuccessReInitialize = () => [
+    mockLoadedDefaultRequest,
+    mockLoadedSuccessRequest,
+    {...mockLoadedDefaultRequest, request: {
+            query: GET_REPOSITORIES_INITIAL,
+            variables: {
+                login: 'gibberish',
+                order: OrderDirection.Asc,
+                pageSize: DEFAULT_PAGE_SIZE
+            } as GetRepositoriesInitialQueryVariables,
+        }
+    }
+];
+
 describe(`${RepositoryOwnerLookup.name}`, () => {
     afterEach(cleanup);
 
@@ -159,32 +169,199 @@ describe(`${RepositoryOwnerLookup.name}`, () => {
         expect(element).toBeInTheDocument();
     });
 
-    it('should render with ...', async () => {
-        const {getByText, getAllByLabelText} = render((
-            <MockedProvider mocks={mockSuccess()} addTypename={false}>
+    it('should render with note (not found)', async () => {
+        const {getByText, getByLabelText} = render((
+            <MockedProvider mocks={mockSuccessNotFound()} addTypename={false}>
                 <RepositoryOwnerLookup/>
             </MockedProvider>
         ));
-        const element = getByText('Start browsing repositories - enter user profile in search first...');
-        expect(element).toBeInTheDocument();
 
-        const inputs = await waitForElement(() => getAllByLabelText('search-bar--input') as HTMLInputElement[]);
-        expect(inputs).toHaveLength(1);
+        const initialNote = await waitForElement(
+            () => getByText('Start browsing repositories - enter user profile in search first...')
+        );
+        expect(initialNote).toBeInTheDocument();
 
-        fireEvent.change(inputs[0], {target: {value: 'front'}});
+        const userSearchInput = await waitForElement(() => getByLabelText('search-bar--input') as HTMLInputElement);
+        fireEvent.change(userSearchInput, {target: {value: 'gibberish'}});
+        expect(userSearchInput.value).toEqual('gibberish');
 
-        expect(inputs[0].value).toEqual('front');
+        const note = await waitForElement(() => getByText('No results (0 found)...'));
+        expect(note).toBeInTheDocument();
+        expect(note.classList).toHaveLength(1);
+        expect(note.classList[0]).toEqual('container');
+    });
 
-        const reactRepository = await waitForElement(() => getByText(/react/i));
-        const angularRepository = await waitForElement(() => getByText(/angular/i));
-        const vueRepository = await waitForElement(() => getByText(/vue/i));
-        const emberRepository = await waitForElement(() => getByText(/ember/i));
-        const backboneRepository = await waitForElement(() => getByText(/backbone/i));
+    describe('with successful response', () => {
+        const setupSuccessful = async (mock: Function) => {
+            const {getByText, getByLabelText, getAllByLabelText, container} = render((
+                <MockedProvider mocks={mock()} addTypename={false}>
+                    <RepositoryOwnerLookup/>
+                </MockedProvider>
+            ));
+            const element = getByText('Start browsing repositories - enter user profile in search first...');
+            expect(element).toBeInTheDocument();
 
-        expect(reactRepository).toBeInTheDocument();
-        expect(angularRepository).toBeInTheDocument();
-        expect(vueRepository).toBeInTheDocument();
-        expect(emberRepository).toBeInTheDocument();
-        expect(backboneRepository).toBeInTheDocument();
+            const userSearchInput = await waitForElement(() => getByLabelText('search-bar--input') as HTMLInputElement);
+
+            fireEvent.change(userSearchInput, {target: {value: 'front'}});
+
+            expect(userSearchInput.value).toEqual('front');
+
+            return {getByText, getByLabelText, getAllByLabelText, container};
+        };
+
+        const grabDisplayedUserInfo = async (getByText: Function) => {
+            const userEmail = await waitForElement(() => getByText(/frontend@community.com/i));
+            const reactRepository = await waitForElement(() => getByText(/react/i));
+            const angularRepository = await waitForElement(() => getByText(/angular/i));
+            const vueRepository = await waitForElement(() => getByText(/vue/i));
+            const emberRepository = await waitForElement(() => getByText(/ember/i));
+            const backboneRepository = await waitForElement(() => getByText(/backbone/i));
+
+            return {
+                userEmail,
+                reactRepository,
+                angularRepository,
+                vueRepository,
+                emberRepository,
+                backboneRepository
+            }
+        };
+
+        it('should render user profile and repositories with search working properly', async () => {
+            const {getByText, getAllByLabelText} = await setupSuccessful(mockSuccess);
+            const {
+                userEmail,
+                reactRepository,
+                angularRepository,
+                vueRepository,
+                emberRepository,
+                backboneRepository
+            } = await grabDisplayedUserInfo(getByText);
+
+            expect(userEmail).toBeInTheDocument();
+            expect(reactRepository).toBeInTheDocument();
+            expect(angularRepository).toBeInTheDocument();
+            expect(vueRepository).toBeInTheDocument();
+            expect(emberRepository).toBeInTheDocument();
+            expect(backboneRepository).toBeInTheDocument();
+
+            const inputs = await waitForElement(() => getAllByLabelText('search-bar--input') as HTMLInputElement[]);
+            expect(inputs).toHaveLength(2);
+            expect(inputs[0].value).toEqual('front');
+            expect(inputs[1].value).toEqual('');
+
+            fireEvent.change(inputs[1], {target: {value: 'react'}});
+            await wait(0);
+
+            expect(userEmail).toBeInTheDocument();
+            expect(reactRepository).toBeInTheDocument();
+            expect(angularRepository).not.toBeInTheDocument();
+            expect(vueRepository).not.toBeInTheDocument();
+            expect(emberRepository).not.toBeInTheDocument();
+            expect(backboneRepository).not.toBeInTheDocument();
+        });
+
+        it('should render user profile and no results found note', async () => {
+            const {getByText, getAllByLabelText} = await setupSuccessful(mockSuccess);
+            const {
+                userEmail,
+                reactRepository,
+                angularRepository,
+                vueRepository,
+                emberRepository,
+                backboneRepository
+            } = await grabDisplayedUserInfo(getByText);
+
+            expect(userEmail).toBeInTheDocument();
+            expect(reactRepository).toBeInTheDocument();
+            expect(angularRepository).toBeInTheDocument();
+            expect(vueRepository).toBeInTheDocument();
+            expect(emberRepository).toBeInTheDocument();
+            expect(backboneRepository).toBeInTheDocument();
+
+            const inputs = await waitForElement(() => getAllByLabelText('search-bar--input') as HTMLInputElement[]);
+            expect(inputs).toHaveLength(2);
+            expect(inputs[0].value).toEqual('front');
+            expect(inputs[1].value).toEqual('');
+
+            fireEvent.change(inputs[1], {target: {value: 'java'}});
+            await wait(0);
+            expect(inputs[1].value).toEqual('java');
+
+            expect(userEmail).toBeInTheDocument();
+            expect(reactRepository).not.toBeInTheDocument();
+            expect(angularRepository).not.toBeInTheDocument();
+            expect(vueRepository).not.toBeInTheDocument();
+            expect(emberRepository).not.toBeInTheDocument();
+            expect(backboneRepository).not.toBeInTheDocument();
+
+            const note = await waitForElement(() => getByText('No results (0 found)...'));
+            expect(note).toBeInTheDocument();
+        });
+
+        it('should render note (not found) with empty search', async () => {
+            const {getByText, getAllByLabelText} = await setupSuccessful(mockSuccessReInitialize);
+            const {
+                userEmail,
+                reactRepository,
+                angularRepository,
+                vueRepository,
+                emberRepository,
+                backboneRepository
+            } = await grabDisplayedUserInfo(getByText);
+
+            expect(userEmail).toBeInTheDocument();
+            expect(reactRepository).toBeInTheDocument();
+            expect(angularRepository).toBeInTheDocument();
+            expect(vueRepository).toBeInTheDocument();
+            expect(emberRepository).toBeInTheDocument();
+            expect(backboneRepository).toBeInTheDocument();
+
+            const inputs = await waitForElement(() => getAllByLabelText('search-bar--input') as HTMLInputElement[]);
+            expect(inputs).toHaveLength(2);
+            expect(inputs[0].value).toEqual('front');
+            expect(inputs[1].value).toEqual('');
+
+            fireEvent.change(inputs[1], {target: {value: 'react'}});
+            await wait(0);
+
+            expect(userEmail).toBeInTheDocument();
+            expect(reactRepository).toBeInTheDocument();
+            expect(angularRepository).not.toBeInTheDocument();
+            expect(vueRepository).not.toBeInTheDocument();
+            expect(emberRepository).not.toBeInTheDocument();
+            expect(backboneRepository).not.toBeInTheDocument();
+
+            fireEvent.change(inputs[0], {target: {value: ''}});
+            await wait(0);
+
+            expect(inputs[0].value).toEqual('');
+            expect(userEmail).not.toBeInTheDocument();
+            expect(reactRepository).not.toBeInTheDocument();
+            expect(angularRepository).not.toBeInTheDocument();
+            expect(vueRepository).not.toBeInTheDocument();
+            expect(emberRepository).not.toBeInTheDocument();
+            expect(backboneRepository).not.toBeInTheDocument();
+
+            const note = getByText('Start browsing repositories - enter user profile in search first...');
+            expect(note).toBeInTheDocument();
+            expect(note.classList).toHaveLength(1);
+            expect(note.classList[0]).toEqual('container');
+        });
+
+        it('should toggle user profile summary', async () => {
+            const {container, getByText} = await setupSuccessful(mockSuccess);
+            const {userEmail} = await grabDisplayedUserInfo(getByText);
+            expect(userEmail).toBeInTheDocument();
+            expect(container.querySelector('.fa-window-minimize')).toBeInTheDocument();
+
+            const toggleButton = container.querySelector('.minimize-icon') as HTMLButtonElement;
+
+            fireEvent.click(toggleButton);
+            wait(0);
+
+            expect(container.querySelector('.fa-window-maximize')).toBeInTheDocument();
+        });
     });
 });

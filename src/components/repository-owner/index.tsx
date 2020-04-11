@@ -9,6 +9,7 @@ import {
     OrderDirection,
     RepositoryEdge
 } from '../../graphql/types';
+import {mapRepositoryEdges} from './mappers';
 import {RepositorySummaryDTO} from './models';
 import RepositoriesList from './components/repositories-list-section/repository-list';
 import {UserProfileSearch} from './components/user-profile-section/user-profile-search';
@@ -17,9 +18,10 @@ import UserProfileSummary from './components/user-profile-section/user-profile-s
 export enum SearchStatus {
     INITIAL,
     RESULTS_LOAD,
+    RESULTS_ERROR,
     RESULTS_SUCCESS,
     RESULTS_NOT_FOUND,
-    RESULTS_ERROR
+    RESULTS_FILTERED_NOT_FOUND,
 }
 
 export const DEFAULT_PAGE_SIZE = 5;
@@ -46,29 +48,24 @@ export const RepositoryOwnerLookup = () => {
         }
     };
 
-    const triggerSearchByUser = (pattern: string) => _.map([triggerSearch, changeSearchPattern], fn => fn(pattern));
+    const triggerSearchByUser = (pattern: string) => _.map([triggerSearch, changeSearchPattern, () => changeFilterPattern('')], fn => fn(pattern));
     const triggerSearchByRepo = (pattern: string) => changeFilterPattern(pattern);
 
     let repositories: RepositorySummaryDTO[] = [];
     if (_.get(data, 'repositoryOwner.repositories.edges')) {
-        let repositoryEdges = _.get(data, 'repositoryOwner.repositories.edges') as RepositoryEdge[];
-        repositories = _.map(repositoryEdges, (edge: RepositoryEdge): RepositorySummaryDTO => (
-            {
-                name: edge?.node?.name ?? '',
-                description: edge?.node?.description,
-                url: edge?.node?.url
-            } as RepositorySummaryDTO)
-        );
+        const repositoryEdges = _.get(data, 'repositoryOwner.repositories.edges') as RepositoryEdge[];
+        repositories = mapRepositoryEdges(repositoryEdges);
     }
 
-    const hasResults = !_.isEmpty(repositories) && !error;
+    let hasResults = !_.isEmpty(repositories) && !error;
     const resultsCount = hasResults ? data?.repositoryOwner?.repositories.totalCount : void 0;
+    let isFiltering = false;
 
     if (hasResults && !!filterPattern) {
         const rp = new RegExp(filterPattern);
-        repositories = _.filter(repositories, repo => {
-            return rp.test(repo.name.toLowerCase()) || rp.test(repo.description?.toLowerCase() ?? '');
-        });
+        repositories = _.filter(repositories, repo => rp.test(repo.name.toLowerCase()));
+        isFiltering = true;
+        hasResults = !_.isEmpty(repositories);
     }
 
     const [avatarUrl, username, email, url] = [
@@ -83,23 +80,29 @@ export const RepositoryOwnerLookup = () => {
         const isLoading = _.isEqual(searchStatus, SearchStatus.RESULTS_LOAD);
         if (error) {
             changeSearchStatus(SearchStatus.RESULTS_ERROR);
-        } else if (!loading && !error && hasResults && isLoading) {
-            changeSearchStatus(SearchStatus.RESULTS_SUCCESS);
-        } else if (!loading && !error && !hasResults && isLoading) {
+        } else if (!error && !loading && isLoading && !hasResults) {
             changeSearchStatus(SearchStatus.RESULTS_NOT_FOUND);
+        } else if (!error && !loading && !isLoading && !hasResults && isFiltering) {
+            changeSearchStatus(SearchStatus.RESULTS_FILTERED_NOT_FOUND);
+        } else if (!error && !loading && hasResults && (
+            (isLoading && !isFiltering) || (!isLoading && !isFiltering)
+        )) {
+            changeSearchStatus(SearchStatus.RESULTS_SUCCESS);
         }
-    }, [loading, error, hasResults, searchStatus]);
+    }, [error, loading, hasResults, isFiltering, searchStatus]);
 
     const renderWithNote = (note: string) => (<div className="container">{note}</div>);
-    const renderResultsFound = () => (
+    const renderResultsWithNote = (note?: string) => (
         <RepositoriesList
-            focus={hasResults && !_.isEmpty(filterPattern)}
+            focus={isFiltering && !_.isEmpty(filterPattern)}
             filterPattern={filterPattern}
             repositories={repositories}
             resultsCount={resultsCount}
             triggerSearch={triggerSearchByRepo}
+            note={note}
         />
     );
+    const renderResultsFound = () => renderResultsWithNote();
 
     const [displayProfile, toggleDisplayProfile] = useState(true);
     const onToggleProfile = () => toggleDisplayProfile(!displayProfile);
@@ -123,6 +126,8 @@ export const RepositoryOwnerLookup = () => {
                         return renderResultsFound();
                     case SearchStatus.RESULTS_NOT_FOUND:
                         return renderWithNote('No results (0 found)...');
+                    case SearchStatus.RESULTS_FILTERED_NOT_FOUND:
+                        return renderResultsWithNote('No results (0 found)...');
                     case SearchStatus.RESULTS_ERROR:
                         return renderWithNote('An error occurred, try again later or refresh the page...');
                     case SearchStatus.RESULTS_LOAD:
