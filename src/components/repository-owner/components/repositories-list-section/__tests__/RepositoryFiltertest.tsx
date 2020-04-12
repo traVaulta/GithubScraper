@@ -5,18 +5,20 @@ import {RepositoryFilter} from '../repository-filter';
 
 describe(`${RepositoryFilter.name}`, () => {
     it('should render without count', () => {
-        const onPatternChange = () => {};
+        const mockFn = () => {
+        };
         const {container} = render(
-            <RepositoryFilter resultsCount={0} onPatternChange={onPatternChange}/>
+            <RepositoryFilter resultsCount={0} onPatternChange={mockFn} onSortChange={mockFn}/>
         );
         expect(container.querySelector('.fa-search')).toBeInTheDocument();
         expect(container.querySelector('.fa-github')).not.toBeInTheDocument();
     });
 
     it('should render with count', () => {
-        const onPatternChange = () => {};
+        const mockFn = () => {
+        };
         const {container} = render(
-            <RepositoryFilter resultsCount={12} onPatternChange={onPatternChange}/>
+            <RepositoryFilter resultsCount={12} onPatternChange={mockFn} onSortChange={mockFn}/>
         );
         expect(container.querySelector('.fa-search')).toBeInTheDocument();
         expect(container.querySelector('.fa-github')).toBeInTheDocument();
@@ -29,8 +31,10 @@ describe(`${RepositoryFilter.name}`, () => {
         const onPatternChange = (value: string) => {
             externalState.searchPattern = value;
         };
+        const mockFn = () => {
+        };
         const {getByLabelText} = render(
-            <RepositoryFilter onPatternChange={onPatternChange}/>
+            <RepositoryFilter onPatternChange={onPatternChange} onSortChange={mockFn}/>
         );
 
         const searchInput: HTMLInputElement = getByLabelText('search-bar--input') as HTMLInputElement;

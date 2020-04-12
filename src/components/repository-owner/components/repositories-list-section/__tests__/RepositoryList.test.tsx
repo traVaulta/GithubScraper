@@ -27,8 +27,13 @@ describe(`${RepositoriesList.name}`, () => {
                 url: 'https://github.com/react/master'
             }
         ];
-        const triggerSearch = () => {};
-        const {getByText} = render(<RepositoriesList repositories={repositories} triggerSearch={triggerSearch}/>);
+        const mockFn = () => {
+        };
+        const {getByText} = render(<RepositoriesList
+            repositories={repositories}
+            triggerSearch={mockFn}
+            sortChange={mockFn}
+        />);
         const element = getByText(/react/i);
         expect(element).toBeInTheDocument();
     });
