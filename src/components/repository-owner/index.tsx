@@ -67,8 +67,8 @@ export const RepositoryOwnerLookup = () => {
     let isFiltering = false;
 
     if (hasResults && !!filterPattern) {
-        const rp = new RegExp(filterPattern);
-        repositories = _.filter(repositories, repo => rp.test(repo.name.toLowerCase()));
+        const rp = new RegExp(filterPattern, 'i');
+        repositories = _.filter(repositories, repo => rp.test(repo.name));
         isFiltering = true;
         hasResults = !_.isEmpty(repositories);
     }
