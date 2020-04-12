@@ -28,6 +28,9 @@ const UserProfileSummary = (props: Props) => (
                         <div className="user-profile-summary user-profile-summary--name">Username: {props.name}</div>
                         <div className="user-profile-summary user-profile-summary--email">Email: {props.email}</div>
                         <div className="user-profile-summary user-profile-summary--url">Profile URL: {props.url}</div>
+                        <div className="user-profile-summary">
+                            Visit <a href={props.url} target="_blank" rel="noopener noreferrer">original</a> page...
+                        </div>
                     </div>
                 </div>
             )}
