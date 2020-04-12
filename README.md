@@ -24,9 +24,15 @@ You can add this environment variable:
 Additionally, if you don't like the app to open automatically in your default browser,\
 you can add `BROWSER=none` into your variables and then open it manually in the browser of your choice.
 
+Finally, run `npm run generate` npm script to generate to proper files.
+
 ## Available Scripts
 
 In the project directory, you can run:
+
+### `npm run generate`
+
+Generates types required for GitHub graphql API. 
 
 ### `npm start`
 
@@ -45,4 +51,4 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 
 ## Keywords
 
-graphql, github-graphql-api-v4, react, react-hooks, typescript
+apollo-boost, graphql, github-graphql-api-v4, react, react-hooks, typescript
