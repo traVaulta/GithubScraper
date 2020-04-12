@@ -2,8 +2,9 @@
 
 Sample React application for listing github account profiles and their repositories 
 
-![screenshot list](https://github.com/traVaulta/GithubScraper/blob/master/screenshots/user-profile-summary.png)
-![screenshot list](https://github.com/traVaulta/GithubScraper/blob/master/screenshots/repository-filter.png)
+![screenshot list](https://github.com/traVaulta/GithubScraper/blob/master/screenshots/search-user.png)
+![screenshot list](https://github.com/traVaulta/GithubScraper/blob/master/screenshots/search-repository-empty.png)
+![screenshot list](https://github.com/traVaulta/GithubScraper/blob/master/screenshots/search-repository-filter.png)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
