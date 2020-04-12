@@ -27,6 +27,16 @@
   }
 }
 
+.load-more-button {
+  text-align: center;
+  cursor: pointer;
+  color: var(--app-color-primary);
+
+  &:hover, &:active, &:focus {
+    font-weight: bold;
+  }
+}
+
 .sort-button {
   padding: 0 5px;
   margin-top: 10px;

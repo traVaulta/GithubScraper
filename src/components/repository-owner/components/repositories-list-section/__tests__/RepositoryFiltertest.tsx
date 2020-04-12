@@ -8,7 +8,7 @@ describe(`${RepositoryFilter.name}`, () => {
         const mockFn = () => {
         };
         const {container} = render(
-            <RepositoryFilter resultsCount={0} onPatternChange={mockFn} onSortChange={mockFn}/>
+            <RepositoryFilter totalCount={0} onPatternChange={mockFn} onSortChange={mockFn}/>
         );
         expect(container.querySelector('.fa-search')).toBeInTheDocument();
         expect(container.querySelector('.fa-github')).not.toBeInTheDocument();
@@ -18,7 +18,7 @@ describe(`${RepositoryFilter.name}`, () => {
         const mockFn = () => {
         };
         const {container} = render(
-            <RepositoryFilter resultsCount={12} onPatternChange={mockFn} onSortChange={mockFn}/>
+            <RepositoryFilter totalCount={12} onPatternChange={mockFn} onSortChange={mockFn}/>
         );
         expect(container.querySelector('.fa-search')).toBeInTheDocument();
         expect(container.querySelector('.fa-github')).toBeInTheDocument();

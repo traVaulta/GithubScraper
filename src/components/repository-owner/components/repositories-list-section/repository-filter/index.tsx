@@ -7,16 +7,17 @@ export interface Props {
     focus?: boolean;
     isAsc?: boolean
     pattern?: string;
-    resultsCount?: number;
-    filteredResultsCount?: number;
+    loadedCount?: number;
+    shownCount?: number;
+    totalCount?: number;
     onPatternChange: (value: string) => void;
     onSortChange: (isAsc: boolean) => void;
 }
 
 export const RepositoryFilter = (props: Props) => {
-    const {filteredResultsCount: count, focus, pattern, onPatternChange, onSortChange, resultsCount: total} = props;
-    const hasResults = !_.isNil(total) && _.gt(total, 0);
-    const isFilteringResults = !_.isNil(count) && _.gt(count, 0) && !_.eq(count, total);
+    const {focus, pattern, onPatternChange, onSortChange, loadedCount, shownCount, totalCount} = props;
+    const hasResults = !_.isNil(totalCount) && _.gt(totalCount, 0);
+    const isFilteringResults = !_.isNil(shownCount) && _.gt(shownCount, 0) && !_.eq(shownCount, totalCount);
     return (
         <SearchBar
             focus={focus}
@@ -27,18 +28,22 @@ export const RepositoryFilter = (props: Props) => {
             {hasResults && (
                 <div className="user-counters">
                     <div className="panel panel--primary panel--content">
-                        {isFilteringResults ?
-                            <span> <i className="fa fa-github"/> {total} total ({count} shown)</span> :
-                            <span> <i className="fa fa-github"/> {total} total</span>
-                        }
-                        <span>  <span aria-label="sort-button" className="sort-button"
-                                      onClick={() => onSortChange(!props.isAsc)}>
-                            {
-                                !props.isAsc ?
-                                    <span><i className="fa fa-caret-down"/> DESC</span> :
-                                    <span><i className="fa fa-caret-up"/> ASC</span>
-                            }
-                        </span></span>
+                        <span> <i className="fa fa-github"/> {totalCount} total{
+                            isFilteringResults && !_.eq(loadedCount, shownCount) ?
+                                <span> (shown {shownCount} / {loadedCount})</span> :
+                                !_.eq(shownCount, totalCount) ?
+                                    <span> ({loadedCount} shown)</span> :
+                                    null
+                        }  </span>
+                        <span
+                            aria-label="sort-button"
+                            className="sort-button"
+                            onClick={() => onSortChange(!props.isAsc)}
+                        >{
+                            !props.isAsc ?
+                                <span><i className="fa fa-caret-down"/> DESC</span> :
+                                <span><i className="fa fa-caret-up"/> ASC</span>
+                        }</span>
                     </div>
                 </div>
             )}

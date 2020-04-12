@@ -5,19 +5,19 @@ import {MockedProvider, wait} from '@apollo/react-testing';
 import * as _ from 'lodash';
 
 import {
-    GetRepositoriesInitialQuery,
-    GetRepositoriesInitialQueryVariables,
+    GetRepositoriesQuery,
+    GetRepositoriesQueryVariables,
     OrderDirection,
     RepositoryEdge
 } from '../../../graphql/types';
-import {GET_REPOSITORIES_INITIAL} from '../../../graphql/github/getRepositoriesInitial';
+import {GET_REPOSITORIES} from '../../../graphql/github/getRepositories';
 import {client} from '../../../graphql';
 import {DEFAULT_PAGE_SIZE, RepositoryOwnerLookup} from '../index';
 import {act} from 'react-dom/test-utils';
 
 const mockError = () => [{
     request: {
-        query: GET_REPOSITORIES_INITIAL,
+        query: GET_REPOSITORIES,
         variables: {
             login: 'tra',
         },
@@ -57,31 +57,31 @@ const repositories = [
 
 const mockLoadedDefaultRequest = {
     request: {
-        query: GET_REPOSITORIES_INITIAL,
+        query: GET_REPOSITORIES,
         variables: {
             login: '',
             order: OrderDirection.Asc,
             pageSize: DEFAULT_PAGE_SIZE
-        } as GetRepositoriesInitialQueryVariables,
+        } as GetRepositoriesQueryVariables,
     },
     result: {
         loading: false,
         data: {
             __typename: 'Query',
             repositoryOwner: null
-        } as GetRepositoriesInitialQuery,
+        } as GetRepositoriesQuery,
         error: void 0
     }
 };
 
 const mockLoadedSuccessRequest = {
     request: {
-        query: GET_REPOSITORIES_INITIAL,
+        query: GET_REPOSITORIES,
         variables: {
             login: 'front',
             order: OrderDirection.Asc,
             pageSize: DEFAULT_PAGE_SIZE
-        } as GetRepositoriesInitialQueryVariables,
+        } as GetRepositoriesQueryVariables,
     },
     result: {
         loading: false,
@@ -108,7 +108,7 @@ const mockLoadedSuccessRequest = {
                     } as RepositoryEdge))
                 }
             }
-        } as GetRepositoriesInitialQuery,
+        } as GetRepositoriesQuery,
         error: void 0
     }
 };
@@ -121,12 +121,12 @@ const mockSuccess = () => [
 const mockSuccessNotFound = () => [
     mockLoadedDefaultRequest,
     {...mockLoadedDefaultRequest, request: {
-            query: GET_REPOSITORIES_INITIAL,
+            query: GET_REPOSITORIES,
             variables: {
                 login: 'gibberish',
                 order: OrderDirection.Asc,
                 pageSize: DEFAULT_PAGE_SIZE
-            } as GetRepositoriesInitialQueryVariables,
+            } as GetRepositoriesQueryVariables,
         }
     }
 ];
@@ -135,12 +135,12 @@ const mockSuccessReInitialize = () => [
     mockLoadedDefaultRequest,
     mockLoadedSuccessRequest,
     {...mockLoadedDefaultRequest, request: {
-            query: GET_REPOSITORIES_INITIAL,
+            query: GET_REPOSITORIES,
             variables: {
                 login: 'gibberish',
                 order: OrderDirection.Asc,
                 pageSize: DEFAULT_PAGE_SIZE
-            } as GetRepositoriesInitialQueryVariables,
+            } as GetRepositoriesQueryVariables,
         }
     }
 ];
@@ -149,12 +149,12 @@ const mockSuccessSort = () => [
     mockLoadedDefaultRequest,
     mockLoadedSuccessRequest,
     {...mockLoadedDefaultRequest, request: {
-            query: GET_REPOSITORIES_INITIAL,
+            query: GET_REPOSITORIES,
             variables: {
                 login: 'front',
                 order: OrderDirection.Desc,
                 pageSize: DEFAULT_PAGE_SIZE
-            } as GetRepositoriesInitialQueryVariables,
+            } as GetRepositoriesQueryVariables,
         },
         result: {
             loading: false,
@@ -181,7 +181,7 @@ const mockSuccessSort = () => [
                         } as RepositoryEdge))
                     }
                 }
-            } as GetRepositoriesInitialQuery,
+            } as GetRepositoriesQuery,
             error: void 0
         }
     }

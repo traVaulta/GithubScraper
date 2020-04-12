@@ -2,10 +2,10 @@ import React, {useEffect, useState} from 'react';
 import {useQuery} from '@apollo/react-hooks';
 import * as _ from 'lodash';
 
-import {GET_REPOSITORIES_INITIAL} from '../../graphql/github/getRepositoriesInitial';
+import {GET_REPOSITORIES} from '../../graphql/github/getRepositories';
 import {
-    GetRepositoriesInitialQuery,
-    GetRepositoriesInitialQueryVariables,
+    GetRepositoriesQuery,
+    GetRepositoriesQueryVariables,
     OrderDirection,
     RepositoryEdge
 } from '../../graphql/types';
@@ -32,13 +32,14 @@ export const RepositoryOwnerLookup = () => {
     const [searchPattern, changeSearchPattern] = useState('');
     const [filterPattern, changeFilterPattern] = useState('');
     const [order, changeOrder] = useState(OrderDirection.Asc);
+    const [cursor, changeCursor] = useState();
 
-    const {loading, error, data} = useQuery<GetRepositoriesInitialQuery>(GET_REPOSITORIES_INITIAL, {
+    const {loading, error, data, fetchMore} = useQuery<GetRepositoriesQuery>(GET_REPOSITORIES, {
         variables: {
             login: searchPattern,
             order,
             pageSize: DEFAULT_PAGE_SIZE
-        } as GetRepositoriesInitialQueryVariables
+        } as GetRepositoriesQueryVariables
     });
 
     const triggerSearch = (pattern: string) => {
@@ -60,12 +61,17 @@ export const RepositoryOwnerLookup = () => {
     if (_.get(data, 'repositoryOwner.repositories.edges')) {
         const repositoryEdges = _.get(data, 'repositoryOwner.repositories.edges') as RepositoryEdge[];
         repositories = mapRepositoryEdges(repositoryEdges);
+        const currentCursor = _.last(repositoryEdges)?.cursor;
+        if (!_.isEqual(cursor, currentCursor)) {
+            changeCursor(currentCursor);
+        }
     }
 
     let hasResults = !_.isEmpty(repositories) && !error;
-    const resultsCount = hasResults ? data?.repositoryOwner?.repositories.totalCount : void 0;
+    const totalCount = hasResults ? data?.repositoryOwner?.repositories.totalCount : void 0;
     let isFiltering = false;
 
+    const loadedCount = _.size(repositories);
     if (hasResults && !!filterPattern) {
         const rp = new RegExp(filterPattern, 'i');
         repositories = _.filter(repositories, repo => rp.test(repo.name));
@@ -96,15 +102,49 @@ export const RepositoryOwnerLookup = () => {
         }
     }, [error, loading, hasResults, isFiltering, searchStatus]);
 
+    const canLoadMore = !!repositories && !!totalCount && _.lt(loadedCount, totalCount);
+    const triggerLoad = async () => {
+        await fetchMore({
+            query: GET_REPOSITORIES,
+            variables: {
+                login: searchPattern,
+                order,
+                pageSize: DEFAULT_PAGE_SIZE,
+                cursor
+            },
+            updateQuery: (previousResult, {fetchMoreResult}) => {
+                const previousRepositoryEdges = _.get(previousResult, 'repositoryOwner.repositories.edges') as RepositoryEdge[];
+                const newRepositoryEdges = _.get(fetchMoreResult, 'repositoryOwner.repositories.edges') as RepositoryEdge[];
+                const together = _.uniq([
+                    ...previousRepositoryEdges,
+                    ...newRepositoryEdges
+                ]);
+                return _.set(
+                    {...fetchMoreResult},
+                    ['repositoryOwner', 'repositories', 'edges'],
+                    together
+                ) as GetRepositoriesQuery;
+            }
+        });
+    };
+
     const renderWithNote = (note: string) => (<div className="container">{note}</div>);
     const renderResultsWithNote = (note?: string) => (
         <RepositoriesList
+            canLoadMore={canLoadMore}
             focus={isFiltering && !_.isEmpty(filterPattern)}
             filterPattern={filterPattern}
             isAsc={isAscOrder}
             repositories={repositories}
-            resultsCount={resultsCount}
             sortChange={triggerOrderChange}
+            loadedCount={loadedCount}
+            shownCount={_.size(repositories)}
+            totalCount={totalCount}
+            triggerLoad={async () => {
+                if (canLoadMore) {
+                    await triggerLoad();
+                }
+            }}
             triggerSearch={triggerSearchByRepo}
             note={note}
         />
