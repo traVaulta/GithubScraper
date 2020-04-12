@@ -31,7 +31,8 @@ export const RepositoryFilter = (props: Props) => {
                             <span> <i className="fa fa-github"/> {total} total ({count} shown)</span> :
                             <span> <i className="fa fa-github"/> {total} total</span>
                         }
-                        <span>  <span className="sort-button" onClick={() => onSortChange(!props.isAsc)}>
+                        <span>  <span aria-label="sort-button" className="sort-button"
+                                      onClick={() => onSortChange(!props.isAsc)}>
                             {
                                 !props.isAsc ?
                                     <span><i className="fa fa-caret-down"/> DESC</span> :

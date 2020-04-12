@@ -13,6 +13,7 @@ import {
 import {GET_REPOSITORIES_INITIAL} from '../../../graphql/github/getRepositoriesInitial';
 import {client} from '../../../graphql';
 import {DEFAULT_PAGE_SIZE, RepositoryOwnerLookup} from '../index';
+import {act} from 'react-dom/test-utils';
 
 const mockError = () => [{
     request: {
@@ -140,6 +141,48 @@ const mockSuccessReInitialize = () => [
                 order: OrderDirection.Asc,
                 pageSize: DEFAULT_PAGE_SIZE
             } as GetRepositoriesInitialQueryVariables,
+        }
+    }
+];
+
+const mockSuccessSort = () => [
+    mockLoadedDefaultRequest,
+    mockLoadedSuccessRequest,
+    {...mockLoadedDefaultRequest, request: {
+            query: GET_REPOSITORIES_INITIAL,
+            variables: {
+                login: 'front',
+                order: OrderDirection.Desc,
+                pageSize: DEFAULT_PAGE_SIZE
+            } as GetRepositoriesInitialQueryVariables,
+        },
+        result: {
+            loading: false,
+            data: {
+                __typename: 'Query',
+                repositoryOwner: {
+                    __typename: 'User',
+                    avatarUrl: '',
+                    login: 'frontend',
+                    email: 'frontend@community.com',
+                    url: 'https://github.com/frontend',
+                    repositories: {
+                        __typename: 'RepositoryConnection',
+                        totalCount: _.size(repositories),
+                        edges: _.map(_.reverse(repositories), ({name, description, url}) => ({
+                            __typename: 'RepositoryEdge',
+                            cursor: `2if3904f4k39k94k39${name}`,
+                            node: {
+                                __typename: 'Repository',
+                                name,
+                                description,
+                                url
+                            }
+                        } as RepositoryEdge))
+                    }
+                }
+            } as GetRepositoriesInitialQuery,
+            error: void 0
         }
     }
 ];
@@ -350,6 +393,41 @@ describe(`${RepositoryOwnerLookup.name}`, () => {
             expect(note.classList[0]).toEqual('container');
         });
 
+        it('should render with sorting working properly', async () => {
+            const {container, getByText, getByLabelText} = await setupSuccessful(mockSuccessSort);
+            const {
+                userEmail,
+                reactRepository,
+                angularRepository,
+                vueRepository,
+                emberRepository,
+                backboneRepository
+            } = await grabDisplayedUserInfo(getByText);
+
+            expect(userEmail).toBeInTheDocument();
+            expect(reactRepository).toBeInTheDocument();
+            expect(angularRepository).toBeInTheDocument();
+            expect(vueRepository).toBeInTheDocument();
+            expect(emberRepository).toBeInTheDocument();
+            expect(backboneRepository).toBeInTheDocument();
+
+            const repositoryTitles = _.map(container.querySelectorAll('.panel--title>a'), v => v.innerHTML);
+
+            const sortButton = await waitForElement(() => getByLabelText('sort-button') as HTMLButtonElement);
+            await act(async () => {
+                fireEvent.click(sortButton);
+                await wait(0);
+            });
+
+            const repositoryTitlesDesc = _.map(container.querySelectorAll('.panel--title>a'), v => v.innerHTML);
+            const expectedTitles = _.reverse(repositoryTitles);
+            expect(repositoryTitlesDesc[0]).toEqual(expectedTitles[0]);
+            expect(repositoryTitlesDesc[1]).toEqual(expectedTitles[1]);
+            expect(repositoryTitlesDesc[2]).toEqual(expectedTitles[2]);
+            expect(repositoryTitlesDesc[3]).toEqual(expectedTitles[3]);
+            expect(repositoryTitlesDesc[4]).toEqual(expectedTitles[4]);
+        });
+
         it('should toggle user profile summary', async () => {
             const {container, getByText} = await setupSuccessful(mockSuccess);
             const {userEmail} = await grabDisplayedUserInfo(getByText);
@@ -359,7 +437,7 @@ describe(`${RepositoryOwnerLookup.name}`, () => {
             const toggleButton = container.querySelector('.minimize-icon') as HTMLButtonElement;
 
             fireEvent.click(toggleButton);
-            wait(0);
+            await wait(0);
 
             expect(container.querySelector('.fa-window-maximize')).toBeInTheDocument();
         });
