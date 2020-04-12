@@ -11,8 +11,15 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "coverage": "set CI=true && npm test -- --coverage",
     "eject": "react-scripts eject",
     "generate": "graphql-codegen"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/components/**/*.tsx",
+      "src/graphql/**/*.ts"
+    ]
   },
   "eslintConfig": {
     "extends": "react-app"
