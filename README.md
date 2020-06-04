@@ -1,6 +1,7 @@
 # GithubScraper
 
-Sample React application for listing github account profiles and their repositories 
+Sample React application for listing github account profiles and their repositories.\
+Feel free to use for student project or experimentation.
 
 ![screenshot list](https://github.com/traVaulta/GithubScraper/blob/master/screenshots/search-user.png)
 ![screenshot list](https://github.com/traVaulta/GithubScraper/blob/master/screenshots/search-repository-empty.png)
