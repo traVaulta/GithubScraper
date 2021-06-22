@@ -10,7 +10,7 @@ export const token = process.env.REACT_APP_GITHUB_TOKEN;
 export const client = new ApolloClient({
     uri: '/graphql',
     headers: {
-        'Authorization': `bearer ${token}`,
+        'Authorization': `Bearer ${token}`,
         'Access-Control-Allow-Origin': '*'
     },
     cache
