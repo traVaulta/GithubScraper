@@ -1,4 +1,4 @@
-import {gql} from 'apollo-boost';
+import { gql } from '@apollo/client/core';
 
 import {REPOSITORY_SUMMARY_FRAGMENT} from './viewRepositorySummaryFragment';
 import {USER_PROFILE_FRAGMENT} from './viewUserProfileFragment';

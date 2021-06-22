@@ -1,4 +1,4 @@
-import {gql} from 'apollo-boost';
+import { gql } from '@apollo/client/core';
 
 export const REPOSITORY_SUMMARY_FRAGMENT = gql`
 fragment RepositorySummary on Repository {
