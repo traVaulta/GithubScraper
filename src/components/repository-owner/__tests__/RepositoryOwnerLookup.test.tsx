@@ -1,7 +1,7 @@
 import React from 'react';
 import {cleanup, fireEvent, render, waitForElement} from '@testing-library/react';
-import {ApolloProvider} from '@apollo/react-hooks';
-import {MockedProvider, wait} from '@apollo/react-testing';
+import {ApolloProvider} from '@apollo/client';
+import { MockedProvider, MockedResponse } from '@apollo/client/testing';
 import * as _ from 'lodash';
 
 import {
@@ -15,16 +15,18 @@ import {client} from '../../../graphql';
 import {DEFAULT_PAGE_SIZE, RepositoryOwnerLookup} from '../index';
 import {act} from 'react-dom/test-utils';
 
-const mockError = () => [{
+export function wait(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+const mockError = (): MockedResponse[] => [{
     request: {
         query: GET_REPOSITORIES,
         variables: {
             login: 'tra',
         },
     },
-    result: {
-        error: 'Error 404: Not found!'
-    },
+    error: new Error('Error 404: Not found!')
 }];
 
 const repositories = [
