@@ -56,4 +56,4 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 
 ## Keywords
 
-apollo-boost, graphql, github-graphql-api-v4, react, react-hooks, typescript
+@apollo/client, graphql, github-graphql-api-v4, react, react-hooks, typescript
