@@ -32,7 +32,7 @@ export const RepositoryOwnerLookup = () => {
     const [searchPattern, changeSearchPattern] = useState('');
     const [filterPattern, changeFilterPattern] = useState('');
     const [order, changeOrder] = useState(OrderDirection.Asc);
-    const [cursor, changeCursor] = useState();
+    const [cursor, changeCursor] = useState<string|undefined>();
 
     const {loading, error, data, fetchMore} = useQuery<GetRepositoriesQuery>(GET_REPOSITORIES, {
         variables: {
@@ -61,9 +61,9 @@ export const RepositoryOwnerLookup = () => {
     if (_.get(data, 'repositoryOwner.repositories.edges')) {
         const repositoryEdges = _.get(data, 'repositoryOwner.repositories.edges') as RepositoryEdge[];
         repositories = mapRepositoryEdges(repositoryEdges);
-        const currentCursor = _.last(repositoryEdges)?.cursor;
-        if (!_.isEqual(cursor, currentCursor)) {
-            changeCursor(currentCursor);
+        const currentCursor = _.last(repositoryEdges)?.cursor ;
+        if (currentCursor && !_.isEqual(cursor, currentCursor)) {
+            changeCursor(`${currentCursor}`);
         }
     }
 
