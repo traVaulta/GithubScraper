@@ -12,10 +12,6 @@ exports[`AppHeader should render 1`] = `
         alt="Logo"
         src="app-logo.png"
       />
-      <img
-        alt="powered-by-rimac"
-        src="powered-by.png"
-      />
     </div>
     <div>
       Github Scraper
