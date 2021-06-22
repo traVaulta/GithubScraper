@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useQuery} from '@apollo/react-hooks';
+import {useQuery} from '@apollo/client';
 import * as _ from 'lodash';
 
 import {GET_REPOSITORIES} from '../../graphql/github/getRepositories';
