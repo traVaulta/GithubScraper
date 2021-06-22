@@ -1,7 +1,7 @@
 import React from 'react';
-import {ApolloProvider} from '@apollo/react-hooks';
-import {client} from '../../graphql';
-import {RepositoryOwnerLookup} from '../repository-owner';
+import { ApolloProvider } from '@apollo/client';
+import { client } from '../../graphql';
+import { RepositoryOwnerLookup } from '../repository-owner';
 
 export const styles = {paddingLeft: '20px'};
 
