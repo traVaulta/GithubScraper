@@ -1,9 +1,6 @@
-import { ApolloClient, ApolloLink, createHttpLink, InMemoryCache, InMemoryCacheConfig } from '@apollo/client';
+import { ApolloClient, ApolloLink, createHttpLink, InMemoryCache } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
-import { IntrospectionFragmentMatcher } from 'apollo-cache-inmemory';
-
-import introspectionResult from './types';
 
 export const token = process.env.REACT_APP_GITHUB_TOKEN;
 localStorage.setItem('token', `${token}`);
@@ -44,11 +41,7 @@ const provideClientConfig = () => {
     });
 
     const link = ApolloLink.from([basic, auth, errorHandler, httpLink]);
-    const fragmentMatcher = new IntrospectionFragmentMatcher({
-        introspectionQueryResultData: introspectionResult
-    });
-
-    const cache = new InMemoryCache({ fragmentMatcher } as InMemoryCacheConfig);
+    const cache = new InMemoryCache();
 
     return {
         link,
